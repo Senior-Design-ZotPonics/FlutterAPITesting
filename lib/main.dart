@@ -5,6 +5,7 @@
 //- https://github.com/PoojaB26/ParsingJSON-Flutter/blob/master/lib/main.dart
 import 'package:flutter/material.dart';
 import 'services.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,12 +15,44 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: Home(),
+      home: Home(title:"api demo"),
     );
   }
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  Home({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _HomeState createState() => _HomeState();
+
+}
+class _HomeState extends State<Home> {
+  callAPI() {
+    PostPut post = PostPut(
+      writings: [Writing(
+        timestamp: DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
+        lightstart: 6,
+        lightend: 21,
+        humidity: 60,
+        temp: 40,
+        waterfreq: 600,
+        nutrientratio: 60,
+        baselevel: 30,
+      ),
+      ],
+    );
+    createPost(post).then((response){
+      if(response.statusCode > 200)
+        print(response.body);
+      else
+        print(response.statusCode);
+    }).catchError((error){
+      print('error : $error');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +61,13 @@ class Home extends StatelessWidget {
         title: Text('ZotPonics API Testing'),
       ),
       body:
-        FutureBuilder<Post> (
+        FutureBuilder<PostGet> (
           future: getPost(),
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
                 return Text("Error");
               }
-              print(snapshot.data.readings.first.baseLevel);
               return Center(
                 child: Column(
                   children: <Widget>[
@@ -45,8 +77,6 @@ class Home extends StatelessWidget {
                     Text('lightStatus: ${snapshot.data.readings.first.lightStatus}'),
                     Text('plantHeight: ${snapshot.data.readings.first.plantHeight}'),
                     Text('timestamp: ${snapshot.data.readings.first.timestamp}'),
-
-
                   ],
                 ),
               );
@@ -55,15 +85,11 @@ class Home extends StatelessWidget {
               return CircularProgressIndicator();
           }
         ),
-//      Center(
-//        child: Text(
-//          "hello",
-//          style: TextStyle(
-//              fontWeight: FontWeight.bold,
-//              fontSize: 30
-//          ),
-//        ),
-//      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: callAPI(),
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
