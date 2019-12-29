@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:io';
 
-String get_url = 'http://10.10.10.185:5000/recentsensordata';
-String put_url = 'http://10.10.10.185:5000/usercontrolgrowth';
+String get_url = 'http://10.0.1.96:5000/recentsensordata';
+String put_url = 'http://10.0.1.96:5000/usercontrolgrowth';
 
 //This function executes the get api using the get_url string
 Future<PostGet> getPost() async{

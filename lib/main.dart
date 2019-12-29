@@ -30,7 +30,10 @@ class Home extends StatefulWidget {
 
 }
 class _HomeState extends State<Home> {
+  int pressed = 0;
+
   callAPI() {
+    pressed++;
     PostPut post = PostPut(
       writings: [Writing(
         timestamp: DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()),
@@ -71,12 +74,13 @@ class _HomeState extends State<Home> {
               return Center(
                 child: Column(
                   children: <Widget>[
-                    Text('baseLevel: ${snapshot.data.readings.first.baseLevel}'),
-                    Text('humidity: ${snapshot.data.readings.first.humidity}'),
-                    Text('lastWateredTimestamp: ${snapshot.data.readings.first.lastWateredTimestamp}'),
-                    Text('lightStatus: ${snapshot.data.readings.first.lightStatus}'),
-                    Text('plantHeight: ${snapshot.data.readings.first.plantHeight}'),
-                    Text('timestamp: ${snapshot.data.readings.first.timestamp}'),
+                    Text('pressed: $pressed'),
+                    Text('baseLevel: ${snapshot.data.readings.last.baseLevel}'),
+                    Text('humidity: ${snapshot.data.readings.last.humidity}'),
+                    Text('lastWateredTimestamp: ${snapshot.data.readings.last.lastWateredTimestamp}'),
+                    Text('lightStatus: ${snapshot.data.readings.last.lightStatus}'),
+                    Text('plantHeight: ${snapshot.data.readings.last.plantHeight}'),
+                    Text('timestamp: ${snapshot.data.readings.last.timestamp}'),
                   ],
                 ),
               );
@@ -86,7 +90,7 @@ class _HomeState extends State<Home> {
           }
         ),
       floatingActionButton: FloatingActionButton(
-        onPressed: callAPI(),
+        onPressed: () { setState(() { callAPI(); }); },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
